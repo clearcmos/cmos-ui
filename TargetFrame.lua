@@ -155,9 +155,46 @@ local function CreateTargetFrame()
     powerText:SetPoint("CENTER", powerBar, "CENTER", 0, 0)
     frame.PowerText = powerText
 
-    -- ============ CAST BAR ============
+    -- ============ DEBUFFS (directly below frame) ============
+    local debuffContainer = CreateFrame("Frame", nil, frame)
+    debuffContainer:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -2)
+    debuffContainer:SetSize(CONFIG.width, CONFIG.auraSize)
+    frame.DebuffContainer = debuffContainer
+    frame.DebuffIcons = {}
+
+    for i = 1, CONFIG.maxDebuffs do
+        local debuff = CreateFrame("Frame", nil, debuffContainer, "BackdropTemplate")
+        debuff:SetSize(CONFIG.auraSize, CONFIG.auraSize)
+        debuff:SetBackdrop({
+            bgFile = "Interface\\Buttons\\WHITE8x8",
+            edgeFile = "Interface\\Buttons\\WHITE8x8",
+            edgeSize = 1,
+        })
+        debuff:SetBackdropColor(0, 0, 0, 1)
+        debuff:SetBackdropBorderColor(0.8, 0, 0, 1)  -- Red border for debuffs
+        debuff:Hide()
+
+        local icon = debuff:CreateTexture(nil, "ARTWORK")
+        icon:SetPoint("TOPLEFT", 1, -1)
+        icon:SetPoint("BOTTOMRIGHT", -1, 1)
+        icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+        debuff.Icon = icon
+
+        local countText = debuff:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
+        countText:SetPoint("BOTTOMRIGHT", -1, 1)
+        debuff.Count = countText
+
+        local durationText = debuff:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        durationText:SetPoint("TOP", debuff, "BOTTOM", 0, -1)
+        durationText:SetTextColor(1, 1, 1)
+        debuff.Duration = durationText
+
+        frame.DebuffIcons[i] = debuff
+    end
+
+    -- ============ CAST BAR (below debuffs) ============
     local castContainer = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    castContainer:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, -4)
+    castContainer:SetPoint("TOPLEFT", debuffContainer, "BOTTOMLEFT", 0, -14)
     castContainer:SetPoint("RIGHT", frame, "RIGHT", 0, 0)
     castContainer:SetHeight(CONFIG.castBarHeight + 4)
     castContainer:SetBackdrop({
@@ -202,7 +239,7 @@ local function CreateTargetFrame()
 
     -- ============ BUFFS (above frame) ============
     local buffContainer = CreateFrame("Frame", nil, frame)
-    buffContainer:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0, 4)
+    buffContainer:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0, 14)
     buffContainer:SetSize(CONFIG.width, CONFIG.auraSize)
     frame.BuffContainer = buffContainer
     frame.BuffIcons = {}
@@ -235,43 +272,6 @@ local function CreateTargetFrame()
         buff.Duration = durationText
 
         frame.BuffIcons[i] = buff
-    end
-
-    -- ============ DEBUFFS (below cast bar) ============
-    local debuffContainer = CreateFrame("Frame", nil, frame)
-    debuffContainer:SetPoint("TOPLEFT", castContainer, "BOTTOMLEFT", 0, -4)
-    debuffContainer:SetSize(CONFIG.width, CONFIG.auraSize)
-    frame.DebuffContainer = debuffContainer
-    frame.DebuffIcons = {}
-
-    for i = 1, CONFIG.maxDebuffs do
-        local debuff = CreateFrame("Frame", nil, debuffContainer, "BackdropTemplate")
-        debuff:SetSize(CONFIG.auraSize, CONFIG.auraSize)
-        debuff:SetBackdrop({
-            bgFile = "Interface\\Buttons\\WHITE8x8",
-            edgeFile = "Interface\\Buttons\\WHITE8x8",
-            edgeSize = 1,
-        })
-        debuff:SetBackdropColor(0, 0, 0, 1)
-        debuff:SetBackdropBorderColor(0.8, 0, 0, 1)  -- Red border for debuffs
-        debuff:Hide()
-
-        local icon = debuff:CreateTexture(nil, "ARTWORK")
-        icon:SetPoint("TOPLEFT", 1, -1)
-        icon:SetPoint("BOTTOMRIGHT", -1, 1)
-        icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
-        debuff.Icon = icon
-
-        local countText = debuff:CreateFontString(nil, "OVERLAY", "NumberFontNormalSmall")
-        countText:SetPoint("BOTTOMRIGHT", -1, 1)
-        debuff.Count = countText
-
-        local durationText = debuff:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        durationText:SetPoint("TOP", debuff, "BOTTOM", 0, -1)
-        durationText:SetTextColor(1, 1, 1)
-        debuff.Duration = durationText
-
-        frame.DebuffIcons[i] = debuff
     end
 
     return frame

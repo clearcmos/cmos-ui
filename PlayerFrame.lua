@@ -22,10 +22,16 @@ local CONFIG = {
 
 -- Create the player frame
 local function CreatePlayerFrame()
-    local frame = CreateFrame("Frame", "CMOSPlayerFrame", UIParent, "BackdropTemplate")
+    -- Use SecureUnitButtonTemplate for left-click targeting
+    local frame = CreateFrame("Button", "CMOSPlayerFrame", UIParent, "SecureUnitButtonTemplate, BackdropTemplate")
     frame:SetSize(CONFIG.width, CONFIG.height)
     frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOM", CONFIG.xOffset, CONFIG.yOffset)
     frame:SetFrameStrata("LOW")
+
+    -- Secure attributes for targeting
+    frame:SetAttribute("unit", "player")
+    frame:SetAttribute("type1", "target")  -- Left-click targets
+    frame:RegisterForClicks("AnyUp")
 
     -- Backdrop
     frame:SetBackdrop({
