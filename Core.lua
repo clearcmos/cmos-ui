@@ -189,5 +189,13 @@ eventFrame:SetScript("OnEvent", function(self, event, arg1)
         if CMOS.InitCastBar then
             CMOS:InitCastBar()
         end
+        -- Initialize player frame
+        if CMOS.InitPlayerFrame then
+            CMOS:InitPlayerFrame()
+        end
+        -- Initialize target frame
+        if CMOS.InitTargetFrame then
+            CMOS:InitTargetFrame()
+        end
     end
 end)

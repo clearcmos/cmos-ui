@@ -1,12 +1,15 @@
 ## Interface: 11508
 ## Title: CMOS-UI
-## Notes: Clean modern UI - action bars and cast bar
+## Notes: Clean modern UI - action bars, cast bar, and unit frames
 ## Author: nicholas
 ## Version: 1.0.0
 ## SavedVariables: CMOSDB
 ## SavedVariablesPerCharacter: CMOSCharDB
 
 Core.lua
+FrameMover.lua
 ActionBars.lua
 CastBar.lua
+PlayerFrame.lua
+TargetFrame.lua
 Commands.lua
