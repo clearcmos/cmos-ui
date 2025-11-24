@@ -26,7 +26,81 @@ CMOS.actionBars = {}
 
 -- Button size and spacing
 local BUTTON_SIZE = 36
-local BUTTON_PADDING = 4
+local BUTTON_PADDING = 2  -- Tighter spacing
+
+-- Minimal styling colors
+local BORDER_COLOR = {0.2, 0.2, 0.2, 1}
+local BG_COLOR = {0.05, 0.05, 0.05, 0.9}
+
+-- Apply minimal styling to a button
+local function StyleActionButton(button)
+    local name = button:GetName()
+
+    -- Hide default border/chrome textures
+    local texturesToHide = {
+        "Border",
+        "NormalTexture",
+        "NormalTexture2",
+        "FloatingBG",
+    }
+
+    for _, texName in ipairs(texturesToHide) do
+        local tex = _G[name .. texName] or button[texName]
+        if tex then
+            tex:SetAlpha(0)
+        end
+    end
+
+    -- Reduce normal texture (the border that shows on buttons)
+    local normalTex = button:GetNormalTexture()
+    if normalTex then
+        normalTex:SetAlpha(0)
+    end
+
+    -- Style the icon
+    local icon = _G[name .. "Icon"] or button.icon
+    if icon then
+        icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)  -- Slight crop
+        icon:ClearAllPoints()
+        icon:SetPoint("TOPLEFT", button, "TOPLEFT", 1, -1)
+        icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
+    end
+
+    -- Create thin border
+    if not button.cmosBorder then
+        local border = button:CreateTexture(nil, "OVERLAY", nil, 7)
+        border:SetAllPoints()
+        border:SetColorTexture(0, 0, 0, 0)
+
+        -- Use 1px border lines
+        local edgeSize = 1
+        local left = button:CreateTexture(nil, "OVERLAY", nil, 6)
+        left:SetColorTexture(unpack(BORDER_COLOR))
+        left:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+        left:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 0, 0)
+        left:SetWidth(edgeSize)
+
+        local right = button:CreateTexture(nil, "OVERLAY", nil, 6)
+        right:SetColorTexture(unpack(BORDER_COLOR))
+        right:SetPoint("TOPRIGHT", button, "TOPRIGHT", 0, 0)
+        right:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
+        right:SetWidth(edgeSize)
+
+        local top = button:CreateTexture(nil, "OVERLAY", nil, 6)
+        top:SetColorTexture(unpack(BORDER_COLOR))
+        top:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0)
+        top:SetPoint("TOPRIGHT", button, "TOPRIGHT", 0, 0)
+        top:SetHeight(edgeSize)
+
+        local bottom = button:CreateTexture(nil, "OVERLAY", nil, 6)
+        bottom:SetColorTexture(unpack(BORDER_COLOR))
+        bottom:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 0, 0)
+        bottom:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
+        bottom:SetHeight(edgeSize)
+
+        button.cmosBorder = true
+    end
+end
 
 -- Get keybind text for an action slot
 local function GetActionButtonKeybindText(slot)
@@ -119,6 +193,9 @@ local function CreateActionButton(parent, barID, index, actionSlot)
     -- Initialize button state
     ActionButton_Update(button)
     UpdateButtonHotkey(button)
+
+    -- Apply minimal styling
+    StyleActionButton(button)
 
     return button
 end
